@@ -10,6 +10,7 @@ client = deezer.Client()
 default_limit = 1000
 threshold = 42
 from_date = round(time.time() - 30*24*60*60)
+sample_username = "2278880688"
 
 # --------------------- GETTERS ---------------------
 # User ID
@@ -36,12 +37,12 @@ def getTrack(trackid) :
 
 # Playlist ID
 
-def getPlaylistsId(user) :
+def getPlaylists(user) :
     return user.get_playlists()
 
 
 def getLovedTracks(user) :
-    for playlist in getPlaylistsId(user) :
+    for playlist in getPlaylists(user) :
         if playlist.as_dict()['title'] == "Loved Tracks" :
             return playlist
     return None
@@ -63,14 +64,14 @@ def getTitle(track):
 
 # Song
 def getSongString(track):
-    return(getTitle(track) + " " + getArtiste(track))
+    return(getTitle(track) + " - " + getArtiste(track))
 
 def getAllSongsFromPlaylist(playlist,limit=default_limit):
     tracks = TracksFromPlaylist(playlist,limit)
     songs = []
     counter = 0
     for track in tracks :
-        if counter > 40 :
+        if counter > threshold :
             counter = 0
             print("Quota exceeded, sleeping for 5 seconds")
             time.sleep(5)
@@ -82,8 +83,7 @@ def getAllSongsFromLovedTracks(user,limit=default_limit):
     return getAllSongsFromPlaylist(getLovedTracks(user),limit=limit)
 
 
-if "__main__" == __name__ :
-    sample_username = "2278880688"
-    sample_user = getUser(sample_username)
 
-    getAllSongsFromLovedTracks(sample_user)
+if "__main__" == __name__ :
+    sample_user = getUser(sample_username)
+    print(getPlaylists(sample_user))
