@@ -36,6 +36,8 @@ def getTrack(trackid) :
     return client.get_track(trackid)
 
 # Playlist ID
+def getPlaylist(playlist_id:int):
+    return client.get_playlist(playlist_id)
 
 def getPlaylists(user) :
     return user.get_playlists()

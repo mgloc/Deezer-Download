@@ -1,31 +1,39 @@
 # ------------------------------ IMPORTS ------------------------------
-import fetch.fetch_deezer as fd
-import fetch.fetch_youtube as fy
+import tools.fetch.fetch_deezer as fd
+import tools.fetch.fetch_youtube as fy
 
-# Functions
-def downloadDeezerPlaylist(username, playlist_name, path="."):
-    # Deezer part
-    user = fd.getUser(username)
-    playlists = fd.getPlaylists(user)
-    playlist = list(filter(lambda x: playlist_name in str(x.__repr__()), playlists))
-    if len(playlist) == 0:
-        print("Playlist not found")
-        return
-    elif len(playlist) > 1:
-        print("Playlist name not unique, choosing first one")
-    playlist = playlist[0]
-    songs = fd.getAllSongsFromPlaylist(playlist)
+
+def getUserById(user_id):
+    try :
+        user = fd.getUser(user_id)
+        return {"id":user.id,"name":user.name}
+    except :
+        return {"error":"user not found"}
+
+def getPlaylistById(playlist_id):
+    try:
+        playlist = fd.getPlaylist(playlist_id)
+        return {"id":playlist.id,"title":playlist.title}
+    except :
+        return {"error":"playlist not found"}
+
+def getUserPlaylists(user_id):
+    try :
+        user = fd.getUser(user_id)
+    except :
+        return {"error":"user not found"}
     
-    # Youtube part
+    playlists:list = fd.getPlaylists(user)
+    return list(map(lambda pl : {"id":pl.id,"title":pl.title} ,playlists))
+
+def downloadDeezerPlaylistByID(playlist_id,path="."):
+    try :
+        playlist = fd.getPlaylist(playlist_id)
+    except :
+        return {"error":"playlist not found"}
+
+    songs = fd.getAllSongsFromPlaylist(playlist)
     for song in songs:
         print("Downloading " + song)
         fy.getAndDownloadYoutubeMusic(song, path=path, filename=song)
-    
     print("Done")
-
-
-def downloadDeezerLovedTracks(username, path="."):
-    return downloadDeezerPlaylist(username, "Loved Tracks", path)
-
-if __name__ == "__main__":
-    downloadDeezerPlaylist(username=fd.sample_username, playlist_name="deep & lofi")
