@@ -22,11 +22,15 @@ def test_get_user(user_id):
 
 @app.route("/testapi/user/<user_id>/playlists")
 def test_get_user_playlists(user_id):
-    return [{"id":10192,"name":"Playlist 1"},{"id":10192,"name":"Playlist 2"}]
+    return [{"id":10192,"title":"Playlist 1"},{"id":10192,"title":"Playlist 2"}]
 
 @app.route("/testapi/playlist/<playlist_id>")
 def test_get_playlist(playlist_id):
-    return {"id":10192,"name":"Playlist 1"}
+    return {"id":10192,"title":"Playlist 1"}
+
+@app.route("/testapi/playlist/<playlist_id>/tracks")
+def test_get_playlist_tracks(playlist_id):
+    return [{"id":10192,"title":"Track 1"},{"id":10192,"title":"Track 2"},{"id":10192,"title":"Track 3"}]
 
 @app.route("/testapi/playlist/<playlist_id>/download")
 def test_download_playlist(playlist_id):

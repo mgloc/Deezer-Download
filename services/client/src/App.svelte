@@ -1,6 +1,7 @@
 <script>
 	import Header from "./components/Header.svelte";
 	const api_path = "http://localhost:5000/api";
+	const test_api_path = "http://localhost:5000/testapi";
 
 	let userQuery = "2278880688";
 	let userFound = { found: false, id: "", name: "" };
@@ -29,7 +30,7 @@
 				if (data.length === 0) {
 					throw new Error("No playlists found");
 				}
-				if (data[0].title === undefined || data[0].title === undefined) {
+				if (data[0].id === undefined || data[0].title === undefined) {
 					throw new Error("Response is not valid");
 				}
 				playlistList = data;
@@ -37,6 +38,26 @@
 			.catch((err) => {
 				console.log(err);
 				playlistList = [];
+			});
+	}
+
+	let trackList = [];
+	function getTracksFromPlaylist(current_playlist) {
+		fetch(test_api_path + `/playlist/${current_playlist.id}/tracks`)
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data);
+				if (data.length === 0) {
+					throw new Error("No tracks found");
+				}
+				if (data[0].id === undefined || data[0].title === undefined) {
+					throw new Error("Response is not valid");
+				}
+				trackList = data;
+			})
+			.catch((err) => {
+				console.log(err);
+				trackList = [];
 			});
 	}
 
@@ -76,6 +97,7 @@
 		</div>
 	</div>
 
+	<h2>Playlists</h2>
 	<div
 		style="display:flex;flex-wrap: wrap;gap:12px;justify-content: space-between;"
 	>
@@ -85,9 +107,32 @@
 				<button
 					style="width: 100px;"
 					on:click={() => {
+						getTracksFromPlaylist(playlist);
+					}}>See tracks</button
+				>
+
+				<button
+					style="width: 100px; background-color: #86efac;"
+					on:click={() => {
 						downloadPlaylist(playlist);
 					}}>Download</button
 				>
+			</div>
+		{/each}
+	</div>
+
+	<h2>Tracks</h2>
+	<div
+		style="display:flex;flex-direction: column;gap:12px;align-items: center;"
+	>
+		{#each trackList as track}
+			<div
+				style="display:flex;flex-direction: row; align-items: center;justify-content:center;justify-items: center;gap:10px"
+			>
+				<p style="font-size:400; center; margin:0">{track.title}</p>
+				<button style="font-weight:300; background-color: #86efac">
+					download
+				</button>
 			</div>
 		{/each}
 	</div>
