@@ -18,6 +18,9 @@ jobs:
       - name: Chekout 
         uses: actions/checkout@v3
         
+      - name: wtf are we ?
+        run: ls
+        
       - name: Setup node
         uses: actions/setup-node@v3
         with:
