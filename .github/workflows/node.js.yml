@@ -8,14 +8,15 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
+    
 jobs:
   build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [16.x, 18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
     - uses: actions/checkout@v3
@@ -24,7 +25,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: Execute Unit tests
+    - name: Execute unit tests
     - run: npm ci
+    # Vitest test
     - run: npm run test:unit
-     #- run: npm run test
+    # Playwright test
+    #- run: npm run test
